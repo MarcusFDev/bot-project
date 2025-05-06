@@ -70,6 +70,33 @@ async def say_hello(interaction: discord.Interaction):
 async def printer(interaction: discord.Interaction, printer: str):
     await interaction.response.send_message(printer)
 
+
+# Slash command: /example_embed
+@client.tree.command(name="example_embed",
+                     description="Creates a embedded message.",
+                     guild=GUILD_ID)
+async def embed_example(interaction: discord.Interaction):
+    # Grabs file from repository for Discord to use.
+    bot_image = discord.File("assets/images/bot-image.png",
+                             filename="bot-image.png")
+    embed = discord.Embed(title="This is the Title",
+                          url="https://github.com/MarcusFDev/bot-project",
+                          description="I am the description",
+                          color=discord.Color.green())
+    # Uses 'attachment://' to pull image file.
+    embed.set_thumbnail(url="attachment://bot-image.png")
+    embed.add_field(name="Field 1 Title", value="Field One Contents",
+                    inline=False)
+    embed.add_field(name="Field 2 Title", value="Field Two Contents",
+                    inline=True)
+    embed.add_field(name="Field 3 Title", value="Field Three Contents",
+                    inline=True)
+    embed.set_footer(text="This is the footer")
+    embed.set_author(name=interaction.user.name,
+                     url="https://github.com/MarcusFDev/bot-project",
+                     icon_url="attachment://bot-image.png")
+    await interaction.response.send_message(embed=embed, file=bot_image)
+
 # Retrieve & validate Private Token ID for Discord.
 bot_token = os.getenv("BOT_TOKEN")
 if not bot_token:
