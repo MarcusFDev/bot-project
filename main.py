@@ -97,6 +97,37 @@ async def embed_example(interaction: discord.Interaction):
                      icon_url="attachment://bot-image.png")
     await interaction.response.send_message(embed=embed, file=bot_image)
 
+
+class View(discord.ui.View):
+    @discord.ui.button(label="Success Button",
+                       style=discord.ButtonStyle.success,
+                       emoji="⭐")
+    async def button1_callback(self, button, interaction):
+        await button.response.send_message(
+            "You have clicked the Success button!")
+
+    @discord.ui.button(label="Danger Button",
+                       style=discord.ButtonStyle.danger,
+                       emoji="🔥")
+    async def button2_callback(self, button, interaction):
+        await button.response.send_message(
+            "You have clicked the Danger button!")
+
+    @discord.ui.button(label="Primary Button",
+                       style=discord.ButtonStyle.primary,
+                       emoji="🛡️")
+    async def button3_callback(self, button, interaction):
+        await button.response.send_message(
+            "You have clicked the Primary button!")
+
+
+# Slash command: /example_button
+@client.tree.command(name="example_button",
+                     description="Creates a selection of buttons",
+                     guild=GUILD_ID)
+async def button_example(interaction: discord.Interaction):
+    await interaction.response.send_message(view=View())
+
 # Retrieve & validate Private Token ID for Discord.
 bot_token = os.getenv("BOT_TOKEN")
 if not bot_token:
