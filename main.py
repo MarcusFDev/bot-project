@@ -128,6 +128,53 @@ class View(discord.ui.View):
 async def button_example(interaction: discord.Interaction):
     await interaction.response.send_message(view=View())
 
+
+class EmbedButton(discord.ui.View):
+    @discord.ui.button(label="See Example!",
+                       style=discord.ButtonStyle.success,
+                       emoji="🖼️")
+    async def button1_callback(self, button, interaction):
+        file = discord.File("assets/images/example-embed-btn.png",
+                            filename="example-embed-btn.png")
+        embed = discord.Embed(title="Here's your example!")
+        embed.set_image(url="attachment://example-embed-btn.png")
+        await button.response.send_message(embed=embed, file=file,
+                                           ephemeral=True)
+
+
+# Slash command: /example_button_embed
+@client.tree.command(name="example_button_embed",
+                     description="Creates a button on embedded message.",
+                     guild=GUILD_ID)
+async def embedbtn_example(interaction: discord.Interaction):
+    # Grabs file from repository for Discord to use.
+    bot_image = discord.File("assets/images/bot-image.png",
+                             filename="bot-image.png")
+    embedbtn = discord.Embed(title="Embed with Button",
+                             url="https://github.com/MarcusFDev/bot-project",
+                             description="This is a button attached to a "
+                                         "embedded message.",
+                             color=discord.Color.pink())
+    # Uses 'attachment://' to pull image file.
+    embedbtn.set_thumbnail(url="attachment://bot-image.png")
+    embedbtn.add_field(name="", value="**=============================**",
+                       inline=False)
+    embedbtn.add_field(name="How it works simplified:",
+                       value="- Create a embed with `discord.Embed`.\n"
+                             "- Create a class with `discord.ui.View`.\n"
+                             "- Using `@discord.ui.button` customize"
+                             " the button.\n"
+                             "- Then pass both together in a interaction",
+                       inline=False)
+    embedbtn.add_field(name="", value="**=============================**",
+                       inline=False)
+    embedbtn.set_footer(text="Created with the Discord.py library.")
+    embedbtn.set_author(name=interaction.user.name,
+                        url="https://github.com/MarcusFDev/bot-project",
+                        icon_url="attachment://bot-image.png")
+    await interaction.response.send_message(
+        view=EmbedButton(), embed=embedbtn, file=bot_image)
+
 # Retrieve & validate Private Token ID for Discord.
 bot_token = os.getenv("BOT_TOKEN")
 if not bot_token:
