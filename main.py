@@ -20,6 +20,9 @@ class Client(commands.Bot):
         """
         print(f'Logged on as {self.user}!')
 
+        client.add_view(ButtonArray())
+        client.add_view(EmbedButton())
+
         try:
             guild = discord.Object(id=382873288520499201)
             synced = await self.tree.sync(guild=guild)
@@ -36,7 +39,7 @@ class Client(commands.Bot):
         if message.author == self.user:
             return
 
-        if message.content.startswith('hello'):
+        if message.content.lower().startswith(("hello", "hey", "hi", "howdy")):
             await message.channel.send(f'Hi there {message.author}!')
 
     async def on_reaction_add(self, reaction, user):
@@ -98,41 +101,65 @@ async def embed_example(interaction: discord.Interaction):
     await interaction.response.send_message(embed=embed, file=bot_image)
 
 
-class View(discord.ui.View):
+class ButtonArray(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(discord.ui.Button(
+            label="Link Button",
+            style=discord.ButtonStyle.link,
+            emoji="🔗",
+            url="https://github.com/MarcusFDev/bot-project"
+        ))
+
     @discord.ui.button(label="Success Button",
                        style=discord.ButtonStyle.success,
-                       emoji="⭐")
+                       emoji="⭐",
+                       custom_id="persistent_success")
     async def button1_callback(self, button, interaction):
         await button.response.send_message(
-            "You have clicked the Success button!")
+            "You have clicked the ⭐ **Success button**!", ephemeral=True)
 
     @discord.ui.button(label="Danger Button",
                        style=discord.ButtonStyle.danger,
-                       emoji="🔥")
+                       emoji="🔥",
+                       custom_id="persistent_danger")
     async def button2_callback(self, button, interaction):
         await button.response.send_message(
-            "You have clicked the Danger button!")
+            "You have clicked the 🔥 **Danger button**!", ephemeral=True)
 
     @discord.ui.button(label="Primary Button",
                        style=discord.ButtonStyle.primary,
-                       emoji="🛡️")
+                       emoji="🛡️",
+                       custom_id="persistent_primary")
     async def button3_callback(self, button, interaction):
         await button.response.send_message(
-            "You have clicked the Primary button!")
+            "You have clicked the 🛡️ **Primary button**!", ephemeral=True)
+
+    @discord.ui.button(label="Secondary Button",
+                       style=discord.ButtonStyle.secondary,
+                       emoji="🔎",
+                       custom_id="persistent_secondary")
+    async def button4_callback(self, button, interaction):
+        await button.response.send_message(
+            "You have clicked the 🔎 **Secondary button**!", ephemeral=True)
 
 
-# Slash command: /example_button
-@client.tree.command(name="example_button",
-                     description="Creates a selection of buttons",
+# Slash command: /button_array
+@client.tree.command(name="button_array",
+                     description="Creates a selection of buttons.",
                      guild=GUILD_ID)
-async def button_example(interaction: discord.Interaction):
-    await interaction.response.send_message(view=View())
+async def button_array(interaction: discord.Interaction):
+    await interaction.response.send_message(view=ButtonArray())
 
 
 class EmbedButton(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+
     @discord.ui.button(label="See Example!",
                        style=discord.ButtonStyle.success,
-                       emoji="🖼️")
+                       emoji="🖼️",
+                       custom_id="persistent_embedbutton")
     async def button1_callback(self, button, interaction):
         file = discord.File("assets/images/example-embed-btn.png",
                             filename="example-embed-btn.png")
