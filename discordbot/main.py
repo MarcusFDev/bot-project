@@ -101,14 +101,14 @@ async def change_bot_status():
                      guild=GUILD_ID)
 async def embed_example(interaction: discord.Interaction):
     # Grabs file from repository for Discord to use.
-    bot_image = discord.File("assets/images/bot-image.png",
-                             filename="bot-image.png")
+    bot_icon = discord.File("assets/icons/bot-icon1.png",
+                            filename="bot-image1.png")
     embed = discord.Embed(title="This is the Title",
                           url="https://github.com/MarcusFDev/bot-project",
                           description="I am the description",
                           color=discord.Color.green())
     # Uses 'attachment://' to pull image file.
-    embed.set_thumbnail(url="attachment://bot-image.png")
+    embed.set_thumbnail(url="attachment://bot-image1.png")
     embed.add_field(name="Field 1 Title", value="Field One Contents",
                     inline=False)
     embed.add_field(name="Field 2 Title", value="Field Two Contents",
@@ -118,8 +118,8 @@ async def embed_example(interaction: discord.Interaction):
     embed.set_footer(text="This is the footer")
     embed.set_author(name=interaction.user.name,
                      url="https://github.com/MarcusFDev/bot-project",
-                     icon_url="attachment://bot-image.png")
-    await interaction.response.send_message(embed=embed, file=bot_image)
+                     icon_url="attachment://bot-image1.png")
+    await interaction.response.send_message(embed=embed, file=bot_icon)
 
 
 # Slash command: /example_embed_large
@@ -128,10 +128,10 @@ async def embed_example(interaction: discord.Interaction):
                      guild=GUILD_ID)
 async def embed_example_large(interaction: discord.Interaction):
     # Grabs file from repository for Discord to use.
-    bot_icon = discord.File("assets/images/bot-image.png",
-                            filename="bot-image.png")
-    camera_icon = discord.File("assets/images/camera.png",
-                               filename="camera.png")
+    bot_icon = discord.File("assets/icons/bot-icon1.png",
+                            filename="bot-icon1.png")
+    camera_icon = discord.File("assets/icons/camera-icon1.png",
+                               filename="camera-icon1.png")
     embed = discord.Embed(
         title="📗 **Title:** Maximum 256 characters.",
         url="https://github.com/MarcusFDev/bot-project",
@@ -140,7 +140,7 @@ async def embed_example_large(interaction: discord.Interaction):
                     " is 6000.*",
         color=discord.Color.dark_orange())
     # Uses 'attachment://' to pull image file.
-    embed.set_thumbnail(url="attachment://bot-image.png")
+    embed.set_thumbnail(url="attachment://bot-icon1.png")
     embed.add_field(name="\u200b", value="\u200b", inline=False)
     embed.add_field(
         name="📖 **Field Title:** Maximum 256 characters.",
@@ -160,12 +160,12 @@ async def embed_example_large(interaction: discord.Interaction):
         inline=False)
     embed.add_field(name="\u200b", value="\u200b", inline=False)
 
-    embed.set_image(url="attachment://camera.png")
+    embed.set_image(url="attachment://camera-icon1.png")
 
     embed.set_footer(text="Footer: Maximum 2048 characters.")
     embed.set_author(name="Author: Maximum 256 characters.",
                      url="https://github.com/MarcusFDev/bot-project",
-                     icon_url="attachment://bot-image.png")
+                     icon_url="attachment://bot-icon1.png")
     await interaction.response.send_message(
         embed=embed, files=[bot_icon, camera_icon])
 
@@ -244,15 +244,15 @@ class EmbedButton(discord.ui.View):
                      guild=GUILD_ID)
 async def embedbtn_example(interaction: discord.Interaction):
     # Grabs file from repository for Discord to use.
-    bot_image = discord.File("assets/images/bot-image.png",
-                             filename="bot-image.png")
+    bot_icon = discord.File("assets/icons/bot-icon1.png",
+                            filename="bot-icon1.png")
     embedbtn = discord.Embed(title="Embed with Button",
                              url="https://github.com/MarcusFDev/bot-project",
                              description="This is a button attached to a "
                                          "embedded message.",
                              color=discord.Color.pink())
     # Uses 'attachment://' to pull image file.
-    embedbtn.set_thumbnail(url="attachment://bot-image.png")
+    embedbtn.set_thumbnail(url="attachment://bot-icon1.png")
     embedbtn.add_field(name="", value="**=============================**",
                        inline=False)
     embedbtn.add_field(name="How it works simplified:",
@@ -267,9 +267,9 @@ async def embedbtn_example(interaction: discord.Interaction):
     embedbtn.set_footer(text="Created with the Discord.py library.")
     embedbtn.set_author(name=interaction.user.name,
                         url="https://github.com/MarcusFDev/bot-project",
-                        icon_url="attachment://bot-image.png")
+                        icon_url="attachment://bot-icon1.png")
     await interaction.response.send_message(
-        view=EmbedButton(), embed=embedbtn, file=bot_image)
+        view=EmbedButton(), embed=embedbtn, file=bot_icon)
 
 
 # Retrieve & validate Private Token ID for Discord.
