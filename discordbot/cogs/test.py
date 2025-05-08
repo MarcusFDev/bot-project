@@ -1,9 +1,7 @@
 import discord # noqa
+from main import GUILD_ID
 from discord import app_commands
 from discord.ext import commands
-
-# Contains Development Server ID.
-GUILD_ID = discord.Object(id=382873288520499201)
 
 
 class Test(commands.Cog):
