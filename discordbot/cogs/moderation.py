@@ -155,6 +155,33 @@ class Moderation(commands.Cog):
                 f"⚠️ An error occurred while timing out: {e}",
                 ephemeral=True)
 
+    @app_commands.command(
+            name="kick", description="Kicks select user from the discord.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to kick.",
+        reason="Reason for the kick."
+    )
+    async def user_kick(self, interaction: discord.Interaction, user: discord.Member, reason: str = "No reason provided."): # noqa
+        if not interaction.user.guild_permissions.kick_members:
+            await interaction.response.send_message(
+                "❌ You don't have permission to kick members.", ephemeral=True)
+            return
+
+        try:
+            await user.kick(reason=reason)
+            await interaction.response.send_message(
+                f"✅ Successfully kicked {user.name} \nReason: {reason}",
+                ephemeral=True)
+        except discord.Forbidden:
+            await interaction.response.send_message(
+                "❌ You do not have permission to kick this user",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.response.send_message(
+                f"⚠️ An error occurred while kicking user: {e}",
+                ephemeral=True)
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
