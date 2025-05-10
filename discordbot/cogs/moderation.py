@@ -3,6 +3,7 @@ from main import GUILD_ID
 from discord import app_commands
 from discord.ext import commands
 from datetime import timedelta
+from typing import Optional
 
 
 class Moderation(commands.Cog):
@@ -180,6 +181,41 @@ class Moderation(commands.Cog):
         except discord.HTTPException as e:
             await interaction.response.send_message(
                 f"⚠️ An error occurred while kicking user: {e}",
+                ephemeral=True)
+
+    @app_commands.command(
+            name="clear", description="Clear select messages from channel.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="Optional: Specify User messages to delete.",
+        amount="Amount to delete."
+    )
+    async def clear(self, interaction: discord.Interaction, amount: int, user: Optional[discord.Member] = None ): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to clear messages.",
+                ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        def check(message: discord.Message):
+            return user is None or message.author == user
+
+        try:
+            deleted = await interaction.channel.purge(
+                limit=amount, check=check)
+            target = f"from {user.mention}" if user else "from the channel"
+            await interaction.followup.send(
+                f"✅ Successfully deleted {len(deleted)} messages {target}.",
+                ephemeral=True)
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You don't have permission to clear this channels messages.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while clearing messages: {e}",
                 ephemeral=True)
 
 
