@@ -218,6 +218,38 @@ class Moderation(commands.Cog):
                 f"⚠️ An error occurred while clearing messages: {e}",
                 ephemeral=True)
 
+    @app_commands.command(name="nickname", description="Change user nickname.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User nickname to change.",
+        nickname="Enter Nickname here."
+    )
+    async def user_nickname(self, interaction: discord.Interaction, user: discord.Member, nickname: str = None): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to change user nicknames.",
+                ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        try:
+            await user.edit(nick=nickname)
+            if nickname:
+                msg = f"✅ Nickname for {user.mention} changed to **{nickname}**." # noqa
+            else:
+                msg = f"✅ Nickname for {user.mention} has been reset."
+            await interaction.followup.send(msg, ephemeral=True)
+
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You don't have permission to change that user's nickname.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occorred while changing nickname: {e}",
+                ephemeral=True)
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
