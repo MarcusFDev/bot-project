@@ -32,3 +32,32 @@ async def example(interaction: discord.Interaction)
     example_embed.set_author(name="Example Name", url="www.example.com", icon_url="https://exampleimagelink.com")                                                        
     await interaction.response.send_message(embed=example_embed)
 
+# Redacted structure of Mute feature not implemented.
+
+    @app_commands.command(name="mute", description="Mute a select user.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to mute.",
+        amount="How long to mute lasts.",
+        reason="Provide a reason."
+    )
+    async def user_mute(self, interaction: discord.Interaction, user: discord.Member, amount: int, reason: str): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message (
+                "❌ You don't have permission to mute a member.",
+                ephemeral=True)
+            return
+        
+        await interaction.response.defer(ephemeral=True)
+
+        try:
+            await user.
+        
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You don't have permission to mute this member.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while muting user: {e}",
+                ephemeral=True)
