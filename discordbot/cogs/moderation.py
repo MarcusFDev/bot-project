@@ -250,6 +250,49 @@ class Moderation(commands.Cog):
                 f"⚠️ An error occorred while changing nickname: {e}",
                 ephemeral=True)
 
+    @app_commands.command(
+            name="warn", description="Warn a user with a message.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to warn.",
+        message="Enter warning message."
+    )
+    async def user_warn(self, interaction: discord.Interaction, user: discord.Member, message: str): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to warn a member.",
+                ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        try:
+            await interaction.channel.send(
+                f"⚠️ {user.mention}, you have been warned by {interaction.user.mention}: \n> {message}" # noqa
+            )
+            try:
+                await user.send(
+                    f"You have received a warning in **{interaction.guild.name}**:\n> {message}" # noqa
+                )
+            except discord.Forbidden:
+                await interaction.followup.send(
+                    f"⚠️ Warned {user.mention}, but could not DM them.",
+                    ephemeral=True
+                )
+            else:
+                await interaction.followup.send(
+                    f"✅ Successfully warned {user.mention} and sent them a DM."
+                )
+
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You don't have permisison to warn that user.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while warning user: {e}",
+                ephemeral=True)
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
