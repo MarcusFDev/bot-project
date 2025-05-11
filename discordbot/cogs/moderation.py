@@ -293,6 +293,48 @@ class Moderation(commands.Cog):
                 f"⚠️ An error occurred while warning user: {e}",
                 ephemeral=True)
 
+    @app_commands.command(name="add_role", description="Add a role to a user.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to assign role to.",
+        role="Role name to assign. ❗Reminder: Bot can not assign roles hire than itself." # noqa
+    )
+    async def user_addrole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to change member roles.",
+                ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        bot = interaction.guild.me
+        if role >= bot.top_role:
+            await interaction.followup.send(
+                "❌ Role cannot be applied. Check bot role hierachy.")
+            return
+
+        if role in user.roles:
+            await interaction.followup.send(
+                f"❗{user.mention} already has the role {role.mention}.",
+                ephemeral=True
+            )
+            return
+
+        try:
+            await user.add_roles(role)
+            await interaction.followup.send(
+                f"✅ Successfully added {role.mention} to {user.mention}.",
+                ephemeral=True)
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You do not have permission to assign that role.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while assigning role: {e}",
+                ephemeral=True)
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
