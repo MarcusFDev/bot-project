@@ -365,12 +365,13 @@ class Moderation(commands.Cog):
                 f"❗ {user.mention} does not have the role {role.mention}.",
                 ephemeral=True
             )
+            return
 
         try:
             await user.remove_roles(role)
             await interaction.followup.send(
-                f"✅ Successfully removed {role.mention} to {user.mention}.",
-                ephereal=True)
+                f"✅ Successfully removed {role.mention} from {user.mention}.",
+                ephemeral=True)
         except discord.Forbidden:
             await interaction.followup.send(
                 "❌ You do not have permisison to remove that role.",
