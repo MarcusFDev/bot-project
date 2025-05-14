@@ -382,6 +382,49 @@ class Moderation(commands.Cog):
                 ephemeral=True
             )
 
+    @app_commands.command(
+            name="remove_allroles", description="Removes all roles from user.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to remove all roles from.",
+        reason="Reason for role removal."
+    )
+    async def user_remove_allroles(self, interaction: discord.Interaction, user: discord.Member, reason: str = "No Reason was given."): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to remove all roles.",
+                ephemeral=True)
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        bot = interaction.guild.me
+        remove_roles = [
+            role for role in user.roles
+            if role != interaction.guild.default_role and role < bot.top_role
+        ]
+
+        if not remove_roles:
+            await interaction.followup.send(
+                f"❗ {user.mention} has no removable roles.",
+                ephemeral=True)
+            return
+
+        try:
+            await user.remove_roles(*remove_roles, reason=reason)
+            await interaction.followup.send(
+                f"✅ Successfully removed all roles from {user.mention}. \n"
+                f"> **Reason:** {reason}"
+            )
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You do not have permission to remove one or more roles.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while removing all roles: {e}",
+                ephemeral=True)
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
