@@ -38,18 +38,26 @@ class Moderation(commands.Cog):
         reason="Reason for the Ban.",
         delete_messages="How much user history to Delete."
     )
-    async def user_ban(self, interaction: discord.Interaction, user: discord.User, delete_messages:int, reason: str = "No reason provided."):  # noqa
+    async def user_ban(self,
+                       interaction: discord.Interaction,
+                       user: discord.User,
+                       delete_messages: int,
+                       reason: str = "No reason provided."):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to ban members.", ephemeral=True)
+                "❌ You don't have permission to use this command.",
+                ephemeral=True)
             return
 
         await interaction.response.defer(ephemeral=True)
 
         try:
-            await interaction.guild.ban(user, reason=reason, delete_message_days=delete_messages)  # noqa
+            await interaction.guild.ban(
+                user, reason=reason, delete_message_days=delete_messages)
             await interaction.followup.send(
-                f"✅ Successfully banned {user.name}. Deleted messages from the last **{delete_messages} day(s)**.", ephemeral=True) # noqa
+                f"✅ Successfully banned {user.name}. Deleted messages from the"
+                f" last **{delete_messages} day(s)**.", ephemeral=True)
         except discord.Forbidden:
             await interaction.followup.send(
                 "❌ You do not have permission to ban this user",
@@ -62,10 +70,13 @@ class Moderation(commands.Cog):
             name="unban", description="Unban a user from the discord.")
     @app_commands.guilds(GUILD_ID)
     @app_commands.describe(user_id="User ID to unban.")
-    async def user_unban(self, interaction: discord.Interaction, user_id: str):
+    async def user_unban(self,
+                         interaction: discord.Interaction,
+                         user_id: str):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to unban members.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -101,7 +112,8 @@ class Moderation(commands.Cog):
 
         except discord.Forbidden:
             await interaction.followup.send(
-                "❗ Bot unable to unban UserID. Check permissions & role hierarchy", # noqa
+                "❗ Bot unable to unban UserID. Check permissions & role"
+                " hierarchy",
                 ephemeral=True)
 
         except discord.HTTPException as e:
@@ -111,7 +123,8 @@ class Moderation(commands.Cog):
         except Exception as e:
             print(f"Unexpected error in /unban: {e}")
             await interaction.followup.send(
-                "⚠️ An unexpected error occurred while processing the unban request.", # noqa
+                "⚠️ An unexpected error occurred while processing the unban"
+                " request.",
                 ephemeral=True
             )
 
@@ -124,10 +137,15 @@ class Moderation(commands.Cog):
         reason="Reason for the Timeout.",
         duration="Timeout duration."
     )
-    async def user_timeout(self, interaction: discord.Interaction, user: discord.Member, duration: int, reason: str = "No reason provided."): # noqa
+    async def user_timeout(self,
+                           interaction: discord.Interaction,
+                           user: discord.Member,
+                           duration: int,
+                           reason: str = "No reason provided."):
+
         if not interaction.user.guild_permissions.moderate_members:
             await interaction.response.send_message(
-                "❌ You don't have permission to timeout members.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -163,10 +181,15 @@ class Moderation(commands.Cog):
         user="User to kick.",
         reason="Reason for the kick."
     )
-    async def user_kick(self, interaction: discord.Interaction, user: discord.Member, reason: str = "No reason provided."): # noqa
+    async def user_kick(self,
+                        interaction: discord.Interaction,
+                        user: discord.Member,
+                        reason: str = "No reason provided."):
+
         if not interaction.user.guild_permissions.kick_members:
             await interaction.response.send_message(
-                "❌ You don't have permission to kick members.", ephemeral=True)
+                "❌ You don't have permission to use this command.",
+                ephemeral=True)
             return
 
         try:
@@ -190,10 +213,14 @@ class Moderation(commands.Cog):
         user="Optional: Specify User messages to delete.",
         amount="Amount to delete."
     )
-    async def clear(self, interaction: discord.Interaction, amount: int, user: Optional[discord.Member] = None ): # noqa
+    async def clear(self,
+                    interaction: discord.Interaction,
+                    amount: int,
+                    user: Optional[discord.Member] = None):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to clear messages.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -224,10 +251,13 @@ class Moderation(commands.Cog):
         user="User nickname to change.",
         nickname="Enter Nickname here."
     )
-    async def user_nickname(self, interaction: discord.Interaction, user: discord.Member, nickname: str = None): # noqa
+    async def user_nickname(self, interaction: discord.Interaction,
+                            user: discord.Member,
+                            nickname: str = None):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to change user nicknames.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -236,7 +266,8 @@ class Moderation(commands.Cog):
         try:
             await user.edit(nick=nickname)
             if nickname:
-                msg = f"✅ Nickname for {user.mention} changed to **{nickname}**." # noqa
+                msg = f"✅ Nickname for {user.mention}"
+                f" changed to **{nickname}**."
             else:
                 msg = f"✅ Nickname for {user.mention} has been reset."
             await interaction.followup.send(msg, ephemeral=True)
@@ -257,10 +288,14 @@ class Moderation(commands.Cog):
         user="User to warn.",
         message="Enter warning message."
     )
-    async def user_warn(self, interaction: discord.Interaction, user: discord.Member, message: str): # noqa
+    async def user_warn(self,
+                        interaction: discord.Interaction,
+                        user: discord.Member,
+                        message: str):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to warn a member.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -268,11 +303,13 @@ class Moderation(commands.Cog):
 
         try:
             await interaction.channel.send(
-                f"⚠️ {user.mention}, you have been warned by {interaction.user.mention}: \n> {message}" # noqa
+                f"⚠️ {user.mention}, you have been warned by"
+                f" {interaction.user.mention}: \n> {message}"
             )
             try:
                 await user.send(
-                    f"You have received a warning in **{interaction.guild.name}**:\n> {message}" # noqa
+                    "You have received a warning in"
+                    f" **{interaction.guild.name}**:\n> {message}"
                 )
             except discord.Forbidden:
                 await interaction.followup.send(
@@ -297,12 +334,17 @@ class Moderation(commands.Cog):
     @app_commands.guilds(GUILD_ID)
     @app_commands.describe(
         user="User to assign role to.",
-        role="Role name to assign. ❗Reminder: Bot can not assign roles hire than itself." # noqa
+        role="Role name to assign. ❗Reminder: Bot can not assign roles hire"
+        " than itself."
     )
-    async def user_addrole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role): # noqa
+    async def user_addrole(self,
+                           interaction: discord.Interaction,
+                           user: discord.Member,
+                           role: discord.Role):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to change member roles.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
@@ -340,12 +382,17 @@ class Moderation(commands.Cog):
     @app_commands.guilds(GUILD_ID)
     @app_commands.describe(
         user="User to remove role from.",
-        role="Role name to remove. ❗Reminder: Bot can not remove roles hire than itself." # noqa
+        role="Role name to remove. ❗Reminder: Bot can not remove roles hire"
+        " than itself."
     )
-    async def user_removerole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role): # noqa
+    async def user_removerole(self,
+                              interaction: discord.Interaction,
+                              user: discord.Member,
+                              role: discord.Role):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to remove member roles.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True
             )
             return
@@ -389,10 +436,14 @@ class Moderation(commands.Cog):
         user="User to remove all roles from.",
         reason="Reason for role removal."
     )
-    async def user_remove_allroles(self, interaction: discord.Interaction, user: discord.Member, reason: str = "No Reason was given."): # noqa
+    async def user_remove_allroles(self,
+                                   interaction: discord.Interaction,
+                                   user: discord.Member,
+                                   reason: str = "No Reason was given."):
+
         if not interaction.user.guild_permissions.administrator:
             await interaction.response.send_message(
-                "❌ You don't have permission to remove all roles.",
+                "❌ You don't have permission to use this command.",
                 ephemeral=True)
             return
 
