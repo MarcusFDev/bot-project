@@ -335,6 +335,52 @@ class Moderation(commands.Cog):
                 f"⚠️ An error occurred while assigning role: {e}",
                 ephemeral=True)
 
+    @app_commands.command(
+            name="remove_role", description="Removes role from a user.")
+    @app_commands.guilds(GUILD_ID)
+    @app_commands.describe(
+        user="User to remove role from.",
+        role="Role name to remove. ❗Reminder: Bot can not remove roles hire than itself." # noqa
+    )
+    async def user_removerole(self, interaction: discord.Interaction, user: discord.Member, role: discord.Role): # noqa
+        if not interaction.user.guild_permissions.administrator:
+            await interaction.response.send_message(
+                "❌ You don't have permission to remove member roles.",
+                ephemeral=True
+            )
+            return
+
+        await interaction.response.defer(ephemeral=True)
+
+        bot = interaction.guild.me
+        if role >= bot.top_role:
+            await interaction.followup.send(
+                "❌ Role cannot be removed. Check bot role hierachy.",
+                ephemeral=True
+            )
+            return
+
+        if role not in user.roles:
+            await interaction.followup.send(
+                f"❗ {user.mention} does not have the role {role.mention}.",
+                ephemeral=True
+            )
+
+        try:
+            await user.remove_roles(role)
+            await interaction.followup.send(
+                f"✅ Successfully removed {role.mention} to {user.mention}.",
+                ephereal=True)
+        except discord.Forbidden:
+            await interaction.followup.send(
+                "❌ You do not have permisison to remove that role.",
+                ephemeral=True)
+        except discord.HTTPException as e:
+            await interaction.followup.send(
+                f"⚠️ An error occurred while removing role: {e}",
+                ephemeral=True
+            )
+
 
 async def setup(client):
     await client.add_cog(Moderation(client))
